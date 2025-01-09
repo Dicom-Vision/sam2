@@ -9,7 +9,7 @@ import shutil
 import tempfile
 from pathlib import Path
 from typing import Iterable, List, Optional, Tuple, Union
-
+from data.dicom_utils import convert_dicoms_to_video 
 import av
 import strawberry
 from app_conf import (
@@ -92,6 +92,16 @@ class Query:
 class Mutation:
 
     @strawberry.mutation
+    def upload_dicom_zip(
+        self,
+        file: Upload
+    ) -> Video:
+        """
+        Receive a zip file containing dicom zipz and store it in the configured S3 bucket.
+        """
+        return video
+
+    @strawberry.mutation
     def upload_video(
         self,
         file: Upload,
@@ -101,6 +111,9 @@ class Mutation:
         """
         Receive a video file and store it in the configured S3 bucket.
         """
+        print(file)
+        if not str(file).endswith("mp4"):
+            file = convert_dicoms_to_video(file)
         max_time = MAX_UPLOAD_VIDEO_DURATION
         filepath, file_key, vm = process_video(
             file,
@@ -120,7 +133,7 @@ class Mutation:
         return video
 
     @strawberry.mutation
-    def start_session(
+    def start_session( #we should be able to call this with a dir of jpg as input
         self, input: StartSessionInput, info: strawberry.Info
     ) -> StartSession:
         inference_api: InferenceAPI = info.context["inference_api"]
@@ -280,6 +293,12 @@ def _get_start_sec_duration_sec(
     else:
         duration_time_sec = max_time
     return start_time_sec, duration_time_sec
+
+
+def process_dicom_zip(
+        file: Upload
+) -> Tuple[Optional[str], str, str, VideoMetadata]:
+    pass
 
 
 def process_video(

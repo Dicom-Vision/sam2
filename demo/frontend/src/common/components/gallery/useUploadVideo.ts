@@ -20,13 +20,14 @@ import {useState} from 'react';
 import {FileRejection, FileWithPath, useDropzone} from 'react-dropzone';
 import {graphql, useMutation} from 'react-relay';
 
-const ACCEPT_VIDEOS = {
+const ACCEPT_FILES = {
   'video/mp4': ['.mp4'],
   'video/quicktime': ['.mov'],
+  'application/zip': ['.zip']
 };
 
 // 70 MB default max video upload size
-const MAX_FILE_SIZE_IN_MB = 70;
+const MAX_FILE_SIZE_IN_MB = 7000;
 const MAX_VIDEO_UPLOAD_SIZE = MAX_FILE_SIZE_IN_MB * 1024 ** 2;
 
 type Props = {
@@ -58,7 +59,7 @@ export default function useUploadVideo({
   );
 
   const {getRootProps, getInputProps} = useDropzone({
-    accept: ACCEPT_VIDEOS,
+    accept: ACCEPT_FILES,
     multiple: false,
     maxFiles: 1,
     onDrop: (

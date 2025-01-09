@@ -1,5 +1,5 @@
-ARG BASE_IMAGE=pytorch/pytorch:2.5.1-cuda12.1-cudnn9-runtime
-ARG MODEL_SIZE=base_plus
+ARG BASE_IMAGE=pytorch/pytorch:2.3.1-cuda12.1-cudnn8-runtime
+ARG MODEL_SIZE=large
 
 FROM ${BASE_IMAGE}
 
@@ -17,7 +17,7 @@ ENV MODEL_SIZE=${MODEL_SIZE}
 # Install system requirements
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
-    libavutil-dev \
+    libavutil-dev \ 
     libavcodec-dev \
     libavformat-dev \
     libswscale-dev \
